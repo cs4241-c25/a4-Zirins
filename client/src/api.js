@@ -8,3 +8,13 @@ async function fetchTasks() {
     });
     return response.json();
 }
+
+async function loginUser(username, password) {
+    const response = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+        credentials: "include" // Allows session cookies
+    });
+    return response.json();
+}

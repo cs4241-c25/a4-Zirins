@@ -10,6 +10,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const MongoStore = require('connect-mongo');
 const User = require('./models/User');
 const Task = require('./models/Task');
+const cors = require('cors');
+
 
 const app = express();
 
@@ -47,6 +49,11 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(cors({
+    origin: "https://a4-zirins.vercel.app", // Allow requests from frontend
+    credentials: true // Allow session cookies
+}));
+
 // Passport Configuration
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -55,13 +62,6 @@ passport.deserializeUser(User.deserializeUser());
 // Serve Routes
 app.use('/auth', require('./routes/authRoutes'));
 app.use('/data', require('./routes/dataRoutes'));
-
-// DEBUGGING (REMOVE BEFORE PRODUCTION)
-app.use((req, res, next) => {
-    console.log("🔍 Session Data:", req.session);
-    console.log("🔍 User Data:", req.user);
-    next();
-});
 
 // Task Creation Route (No Need for `express.static`)
 app.post('/data/add', async (req, res) => {
