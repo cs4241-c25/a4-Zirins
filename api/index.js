@@ -17,6 +17,14 @@ const app = express();
 
 app.set('trust proxy', 1);  // For secure cookies behind a proxy
 
+app.use(cors({
+    origin: [
+        "https://a4-zirins.vercel.app", // Allow requests from frontend
+        "http://localhost:5173" // Allow local frontend testing (Vite)
+    ],credentials: true // Allow session cookies
+}));
+
+
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -48,11 +56,6 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(cors({
-    origin: "https://a4-zirins.vercel.app", // Allow requests from frontend
-    credentials: true // Allow session cookies
-}));
 
 // Passport Configuration
 passport.use(new LocalStrategy(User.authenticate()));
