@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #4f46e5; /* Custom Purple */
+    --color-secondary: #ec4899; /* Custom Pink */
+    --color-accent: #f59e0b; /* Custom Yellow */
+}
+
+@layer utilities {
+    .text-primary {
+        color: var(--color-primary);
+    }
+
+    .bg-primary {
+        background-color: var(--color-primary);
+    }
+
+    .text-secondary {
+        color: var(--color-secondary);
+    }
+
+    .bg-secondary {
+        background-color: var(--color-secondary);
+    }
+}
