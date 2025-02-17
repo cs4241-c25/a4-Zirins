@@ -1,20 +1,20 @@
-const API_URL = import.meta.env.VITE_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; // Uses environment variable
 
+export const loginUser = async (username, password) => {
+    const response = await fetch(`${BACKEND_URL}/auth/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+    });
 
-async function fetchTasks() {
-    const response = await fetch(`${API_URL}/data`, {
-        method: "GET",
+    return response.json();
+};
+
+export const getTasks = async () => {
+    const response = await fetch(`${BACKEND_URL}/data`, {
         credentials: "include",
     });
-    return response.json();
-}
 
-export async function login(username, password) {
-    const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-        credentials: "include" // Allows session cookies
-    });
     return response.json();
-}
+};
