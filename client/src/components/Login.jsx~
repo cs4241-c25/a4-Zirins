@@ -4,13 +4,16 @@ import api from "../api/api"; // ✅ Ensure correct import path
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleLogin = async () => {
         try {
-            const data = await api.login(username, password);
-            console.log("✅ Login successful: ", data);
-        } catch (error) {
-            console.error("❌ Login failed: ", error);
+            const user = await login(username, password);
+            console.log("✅ Login successful:", user);
+            setError(null);
+        } catch (err) {
+            setError("❌ Login failed. Check your credentials.");
+            console.error(err);
         }
     };
 
@@ -46,6 +49,6 @@ const Login = () => {
             </a>
         </div>
     );
-};
+}
 
 export default Login;
