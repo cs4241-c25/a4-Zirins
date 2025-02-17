@@ -7,28 +7,24 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const GitHubStrategy = require('passport-github').Strategy;
 const MongoStore = require('connect-mongo');
 const User = require('./models/User');
 const Task = require('./models/Task');
 const cors = require('cors');
 
+
 const app = express();
 
-app.set('trust proxy', 1); // For secure cookies behind a proxy
+app.set('trust proxy', 1);  // For secure cookies behind a proxy
 
-// ✅ CORS Middleware (Fix CORS Issues)
 app.use(cors({
     origin: [
-        "https://a4-zirins.vercel.app", // Allow frontend requests
+        "https://a4-zirins.vercel.app", // Allow requests from frontend
         "http://localhost:5173" // Allow local frontend testing (Vite)
-    ],
-    credentials: true, // Allow cookies/session data
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ✅ Ensure OPTIONS is allowed
-    allowedHeaders: ["Content-Type", "Authorization"],
+    ],credentials: true // Allow session cookies
 }));
 
-// ✅ Handle Preflight OPTIONS requests (Fixes CORS)
-app.options("*", cors()); // This ensures the server responds properly to preflight requests
 
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -66,6 +62,25 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+// Configure GitHub OAuth
+passport.use(new GitHubStrategy({
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        callbackURL: "https://a4-zirins.onrender.com/auth/github/callback"
+    },
+    function(accessToken, refreshToken, profile, cb) {
+        User.findOneAndUpdate(
+            { githubId: profile.id },
+            { githubId: profile.id, username: profile.username },
+            { upsert: true, new: true },
+            (err, user) => cb(err, user)
+        );
+    }
+));
+
+
+
 
 // Serve Routes
 app.use('/auth', require('./routes/authRoutes'));
