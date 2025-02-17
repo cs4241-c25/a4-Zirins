@@ -21,7 +21,10 @@ app.use(cors({
     origin: [
         "https://a4-zirins.vercel.app", // Allow requests from frontend
         "http://localhost:5173" // Allow local frontend testing (Vite)
-    ],credentials: true // Allow session cookies
+    ],
+    credentials: true, // Allow cookies/session data
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 
@@ -50,7 +53,7 @@ app.use(session({
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        sameSite: 'lax'  // lax prevents session issues on some browsers
+        sameSite: 'none'
     }
 }));
 
