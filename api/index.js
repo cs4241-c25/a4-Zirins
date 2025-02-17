@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const GitHubStrategy = require('passport-github').Strategy;
 const MongoStore = require('connect-mongo');
 const User = require('./models/User');
 const Task = require('./models/Task');
@@ -50,7 +51,7 @@ app.use(session({
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        sameSite: 'lax'  // lax prevents session issues on some browsers
+        sameSite: 'none'
     }
 }));
 
@@ -61,6 +62,25 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+// Configure GitHub OAuth
+passport.use(new GitHubStrategy({
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        callbackURL: "https://a4-zirins.onrender.com/auth/github/callback"
+    },
+    function(accessToken, refreshToken, profile, cb) {
+        User.findOneAndUpdate(
+            { githubId: profile.id },
+            { githubId: profile.id, username: profile.username },
+            { upsert: true, new: true },
+            (err, user) => cb(err, user)
+        );
+    }
+));
+
+
+
 
 // Serve Routes
 app.use('/auth', require('./routes/authRoutes'));
