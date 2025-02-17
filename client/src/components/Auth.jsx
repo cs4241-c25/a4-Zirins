@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../api/api";
 
 export default function Auth({ setUser }) {
@@ -7,7 +7,30 @@ export default function Auth({ setUser }) {
     const [errorMessage, setErrorMessage] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        let isMounted = true; // ✅ Prevent memory leaks on cleanup
+
+        const fetchAuthStatus = async () => {
+            try {
+                const response = await api.checkAuth();
+                if (isMounted && response.user) {
+                    setUser(response.user);
+                }
+            } catch (error) {
+                console.error("❌ Auth status check failed:", error);
+            }
+        };
+
+        fetchAuthStatus();
+        return () => { isMounted = false; }; // Cleanup function
+    }, [setUser]);
+
     const handleAuth = async () => {
+        if (!formData.username.trim() || !formData.password.trim()) {
+            setErrorMessage("Username and password are required.");
+            return;
+        }
+
         setLoading(true);
         setErrorMessage(null);
 
@@ -17,10 +40,9 @@ export default function Auth({ setUser }) {
                 : await api.login(formData.username, formData.password);
 
             if (response.user) {
-                setUser(response.user); // Set authenticated user in state
-                console.log("✅ User Logged In!");
+                setUser(response.user);
             } else {
-                setErrorMessage("Invalid credentials or registration issue.");
+                setErrorMessage(response.message || "Invalid credentials or registration issue.");
             }
         } catch (err) {
             setErrorMessage("An error occurred. Please try again.");
@@ -31,8 +53,10 @@ export default function Auth({ setUser }) {
     };
 
     return (
-        <div className="p-6 bg-white shadow-lg rounded-lg flex flex-col items-center">
-            <h2 className="text-2xl mb-3">{isRegistering ? "Register" : "Login"}</h2>
+        <div className="p-6 bg-white shadow-lg rounded-lg flex flex-col items-center w-80">
+            <h2 className="text-2xl font-semibold mb-3">
+                {isRegistering ? "Register" : "Login"}
+            </h2>
 
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
@@ -41,7 +65,7 @@ export default function Auth({ setUser }) {
                 placeholder="Username"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                className="border p-2 w-full mb-2"
+                className="border p-2 w-full mb-2 rounded focus:ring focus:ring-blue-300"
                 disabled={loading}
             />
             <input
@@ -49,7 +73,7 @@ export default function Auth({ setUser }) {
                 placeholder="Password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="border p-2 w-full mb-2"
+                className="border p-2 w-full mb-2 rounded focus:ring focus:ring-blue-300"
                 disabled={loading}
             />
 
@@ -57,14 +81,16 @@ export default function Auth({ setUser }) {
                 onClick={handleAuth}
                 className={`w-full py-2 rounded-lg ${
                     isRegistering ? "bg-blue-500" : "bg-green-500"
-                } text-white ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90 transition"}`}
+                } text-white font-semibold ${
+                    loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90 transition"
+                }`}
                 disabled={loading}
             >
                 {loading ? "Processing..." : isRegistering ? "Register" : "Login"}
             </button>
 
             <p
-                className="text-blue-500 mt-2 cursor-pointer"
+                className="text-blue-500 mt-2 cursor-pointer hover:underline"
                 onClick={() => setIsRegistering(!isRegistering)}
             >
                 {isRegistering ? "Already have an account? Login" : "No account? Register"}
@@ -72,8 +98,8 @@ export default function Auth({ setUser }) {
 
             <p className="mt-4">Or login with:</p>
             <button
-                onClick={api.loginWithGithub}
-                className="bg-gray-900 text-white px-4 py-2 mt-2 rounded-lg flex items-center gap-2"
+                onClick={() => !loading && api.loginWithGithub()} // ✅ Disable while loading
+                className="bg-gray-900 text-white px-4 py-2 mt-2 rounded-lg flex items-center gap-2 hover:bg-gray-800 transition"
                 disabled={loading}
             >
                 <svg

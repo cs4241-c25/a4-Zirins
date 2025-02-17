@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Auth from "./components/Auth";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
@@ -6,10 +6,40 @@ import api from "./api/api";
 
 export default function App() {
     const [user, setUser] = useState(null);
+    const [tasks, setTasks] = useState([]); // ✅ Store tasks in state
 
+    // 🔹 Fetch authentication status when app loads
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const response = await api.checkAuth();
+                if (response.user) {
+                    setUser(response.user);
+                    fetchTasks(); // ✅ Fetch tasks if authenticated
+                }
+            } catch (error) {
+                console.error("❌ Auth status check failed:", error);
+            }
+        };
+        checkAuth();
+    }, []);
+
+    // 🔹 Fetch tasks from API
+    const fetchTasks = async () => {
+        if (!user) return;
+        try {
+            const fetchedTasks = await api.getTasks();
+            setTasks(fetchedTasks);
+        } catch (error) {
+            console.error("❌ Failed to fetch tasks:", error);
+        }
+    };
+
+    // 🔹 Handle user logout
     const handleLogout = async () => {
         await api.logout();
         setUser(null);
+        setTasks([]); // ✅ Clear tasks on logout
     };
 
     return (
@@ -29,8 +59,8 @@ export default function App() {
                 ) : (
                     <div className="text-center">
                         <h1 className="text-3xl font-bold text-green-600 mb-6">Welcome, {user.username}!</h1>
-                        <TaskForm onTaskAdded={() => setUser({ ...user })} />
-                        <TaskList user={user} />
+                        <TaskForm onTaskAdded={fetchTasks} />
+                        <TaskList user={user} tasks={tasks} refreshTasks={fetchTasks} />
                     </div>
                 )}
             </div>
