@@ -1,0 +1,25 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+    content: [
+        "./index.html",
+        "./src/**/*.{js,ts,jsx,tsx}",
+    ],
+    theme: {
+        extend: {
+            colors: {
+                primary: "#1e3a8a", // Custom Blue
+                secondary: "#9333ea", // Custom Purple
+                accent: "#f59e0b", // Custom Yellow
+            },
+            fontFamily: {
+                poppins: ["Poppins", "sans-serif"],
+                inter: ["Inter", "sans-serif"],
+            },
+            screens: {
+                xs: "480px",
+                xl: "1280px",
+            },
+        },
+    },
+    plugins: [],
+};
