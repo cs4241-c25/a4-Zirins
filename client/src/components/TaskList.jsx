@@ -1,23 +1,9 @@
-import { useEffect, useState } from "react";
 import api from "../api/api";
 
-export default function TaskList({ user }) {
-    const [tasks, setTasks] = useState([]);
-
-    useEffect(() => {
-        if (user) {
-            fetchTasks();
-        }
-    }, [user]);
-
-    const fetchTasks = async () => {
-        const tasksData = await api.getTasks();
-        setTasks(tasksData);
-    };
-
+export default function TaskList({ tasks, refreshTasks }) {
     const handleDelete = async (taskId) => {
         await api.deleteTask(taskId);
-        fetchTasks(); // ✅ Refresh tasks after delete
+        refreshTasks(); // ✅ Trigger refetch from parent
     };
 
     return (

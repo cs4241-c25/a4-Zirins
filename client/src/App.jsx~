@@ -8,14 +8,14 @@ export default function App() {
     const [user, setUser] = useState(null);
     const [tasks, setTasks] = useState([]);
 
-    // ✅ Check authentication on load
+    // 🔹 Fetch authentication status when app loads
     useEffect(() => {
         const checkAuth = async () => {
             try {
                 const response = await api.checkAuth();
                 if (response.user) {
                     setUser(response.user);
-                    fetchTasks(); // ✅ Fetch tasks immediately after login
+                    fetchTasks(); // ✅ Fetch tasks if authenticated
                 }
             } catch (error) {
                 console.error("❌ Auth status check failed:", error);
@@ -24,28 +24,28 @@ export default function App() {
         checkAuth();
     }, []);
 
-    // ✅ Fetch tasks from backend
+    // 🔹 Fetch tasks from API
     const fetchTasks = async () => {
         if (!user) return;
         try {
             const fetchedTasks = await api.getTasks();
-            setTasks(fetchedTasks); // ✅ Store tasks in state
+            setTasks(fetchedTasks);
         } catch (error) {
             console.error("❌ Failed to fetch tasks:", error);
-            setTasks([]); // Prevent broken UI if fetch fails
         }
     };
 
-    // ✅ Immediately update state after adding a task
-    const handleTaskAdded = async () => {
-        await fetchTasks(); // ✅ Refresh tasks after adding
+    // 🔹 Handle adding a new task (Immediate Update)
+    const handleTaskAdded = (newTask) => {
+        setTasks((prevTasks) => [...prevTasks, newTask]); // ✅ Instantly update UI
+        fetchTasks(); // ✅ Then refetch from backend to stay synced
     };
 
-    // ✅ Logout logic
+    // 🔹 Handle user logout
     const handleLogout = async () => {
         await api.logout();
         setUser(null);
-        setTasks([]); // ✅ Clear tasks after logout
+        setTasks([]); // ✅ Clear tasks on logout
     };
 
     return (
@@ -66,7 +66,7 @@ export default function App() {
                     <div className="text-center">
                         <h1 className="text-3xl font-bold text-green-600 mb-6">Welcome, {user.username}!</h1>
                         <TaskForm onTaskAdded={handleTaskAdded} />
-                        <TaskList tasks={tasks} refreshTasks={fetchTasks} />
+                        <TaskList user={user} tasks={tasks} refreshTasks={fetchTasks} />
                     </div>
                 )}
             </div>

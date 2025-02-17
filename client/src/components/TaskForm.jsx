@@ -2,47 +2,58 @@ import { useState } from "react";
 import api from "../api/api";
 
 export default function TaskForm({ onTaskAdded }) {
-    const [task, setTask] = useState({ content: "", priority: "Medium", dueDate: "" });
+    const [taskContent, setTaskContent] = useState("");
+    const [priority, setPriority] = useState("Medium");
+    const [dueDate, setDueDate] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newTask = await api.addTask(task);
-        onTaskAdded(newTask); // ✅ Trigger re-fetching of tasks
-        setTask({ content: "", priority: "Medium", dueDate: "" }); // ✅ Reset form
+        if (!taskContent || !dueDate) return;
+
+        setLoading(true);
+        try {
+            await api.addTask({ content: taskContent, priority, dueDate });
+            onTaskAdded(); // ✅ Refresh parent state instead of updating local state
+            setTaskContent("");
+            setPriority("Medium");
+            setDueDate("");
+        } catch (error) {
+            console.error("❌ Error adding task:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div className="p-4 bg-white shadow-md rounded-lg">
-            <h2 className="text-xl font-semibold mb-3">Add a New Task</h2>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                <input
-                    type="text"
-                    placeholder="Task description"
-                    value={task.content}
-                    onChange={(e) => setTask({ ...task, content: e.target.value })}
-                    className="border p-2 rounded"
-                    required
-                />
-                <select
-                    value={task.priority}
-                    onChange={(e) => setTask({ ...task, priority: e.target.value })}
-                    className="border p-2 rounded"
-                >
-                    <option>Low</option>
-                    <option>Medium</option>
-                    <option>High</option>
-                </select>
-                <input
-                    type="date"
-                    value={task.dueDate}
-                    onChange={(e) => setTask({ ...task, dueDate: e.target.value })}
-                    className="border p-2 rounded"
-                    required
-                />
-                <button type="submit" className="bg-green-500 text-white py-2 rounded-lg">
-                    Add Task
-                </button>
-            </form>
-        </div>
+        <form onSubmit={handleSubmit} className="mb-4 bg-white p-4 rounded shadow">
+            <input
+                type="text"
+                placeholder="Task name"
+                value={taskContent}
+                onChange={(e) => setTaskContent(e.target.value)}
+                className="border p-2 w-full rounded mb-2"
+            />
+            <select value={priority} onChange={(e) => setPriority(e.target.value)} className="border p-2 w-full rounded mb-2">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+            <input
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="border p-2 w-full rounded mb-2"
+            />
+            <button
+                type="submit"
+                className={`w-full bg-green-500 text-white p-2 rounded ${
+                    loading ? "opacity-50 cursor-not-allowed" : "hover:bg-green-600 transition"
+                }`}
+                disabled={loading}
+            >
+                {loading ? "Adding..." : "Add Task"}
+            </button>
+        </form>
     );
 }
