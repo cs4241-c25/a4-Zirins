@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 // API request helper functions
@@ -31,25 +30,3 @@ const api = {
 };
 
 export default api;
-=======
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; // Uses environment variable
-
-export const loginUser = async (username, password) => {
-    const response = await fetch(`${BACKEND_URL}/auth/login`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-    });
-
-    return response.json();
-};
-
-export const getTasks = async () => {
-    const response = await fetch(`${BACKEND_URL}/data`, {
-        credentials: "include",
-    });
-
-    return response.json();
-};
->>>>>>> refs/heads/github-auth-setup

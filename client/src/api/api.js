@@ -20,13 +20,14 @@ const api = {
         });
         return response.json();
     },
+    loginWithGithub: () => {
+        window.location.href = `${API_BASE_URL}/auth/github`;
+    },
 
     checkAuth: async () => {
-        const response = await fetch(`${API_BASE_URL}/auth/status`, {
-            credentials: "include",
-        });
+        const response = await fetch(`${API_BASE_URL}/auth/status`, { credentials: "include" });
         return response.json();
-    },
+    }
 };
 
 export default api;
