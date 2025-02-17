@@ -41,8 +41,7 @@ const Login = () => {
             {/* GitHub Login Button */}
             <a
                 href={`${import.meta.env.VITE_BACKEND_URL}/auth/github`}
-                className="bg-gray-900 text-white p-2 mt-2 rounded inline-block"
-            >
+                className="bg-gray-900 text-white p-2 mt-2 rounded inline-block">
                 Login with GitHub
             </a>
         </div>
