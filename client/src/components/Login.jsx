@@ -6,8 +6,12 @@ const Login = () => {
     const [password, setPassword] = useState("");
 
     const handleLogin = async () => {
-        const data = await api.login(username, password);
-        console.log("✅ Login successful: ", data);
+        try {
+            const data = await api.login(username, password);
+            console.log("✅ Login successful: ", data);
+        } catch (error) {
+            console.error("❌ Login failed: ", error);
+        }
     };
 
     return (
@@ -42,6 +46,6 @@ const Login = () => {
             </a>
         </div>
     );
-}
+};
 
 export default Login;
