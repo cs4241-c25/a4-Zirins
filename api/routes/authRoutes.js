@@ -36,15 +36,15 @@ router.get('/status', (req, res) => {
     }
 });
 
+// Redirect to GitHub for login
 router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
 
-
-// Handle GitHub OAuth callback
-router.get("/github/callback",
-    passport.authenticate("github", { failureRedirect: "/login" }),
+// GitHub OAuth callback (handles the redirect after login)
+router.get('/github/callback',
+    passport.authenticate('github', { failureRedirect: '/' }),
     (req, res) => {
         console.log("✅ GitHub Login Successful:", req.user);
-        res.redirect("https://a4-zirins.vercel.app/"); // Redirect back to frontend
+        res.redirect('https://a4-zirins.vercel.app/'); // Change to your frontend URL
     }
 );
 
