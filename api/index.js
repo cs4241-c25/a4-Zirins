@@ -65,19 +65,17 @@ passport.deserializeUser(User.deserializeUser());
 
 // Configure GitHub OAuth
 passport.use(new GitHubStrategy({
-        clientID: process.env.GITHUB_CLIENT_ID,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL: "https://a4-zirins.onrender.com/auth/github/callback"
-    },
-    function(accessToken, refreshToken, profile, cb) {
-        User.findOneAndUpdate(
-            { githubId: profile.id },
-            { githubId: profile.id, username: profile.username },
-            { upsert: true, new: true },
-            (err, user) => cb(err, user)
-        );
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: process.env.GITHUB_CALLBACK_URL
+}, async (accessToken, refreshToken, profile, done) => {
+    let user = await User.findOne({ githubId: profile.id });
+    if (!user) {
+        user = new User({ githubId: profile.id, username: profile.username });
+        await user.save();
     }
-));
+    return done(null, user);
+}));
 
 
 
