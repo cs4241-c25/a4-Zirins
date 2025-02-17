@@ -21,8 +21,11 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
 
 // Logout Route
 router.get('/logout', (req, res) => {
-    req.logout(() => res.json({ message: "Logged out" }));
+    req.logout(() => {
+        res.redirect('https://a4-zirins.vercel.app/');
+    });
 });
+
 
 // Auth
 router.get('/status', (req, res) => {
@@ -33,12 +36,15 @@ router.get('/status', (req, res) => {
     }
 });
 
-router.get('/github', passport.authenticate('github'));
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
 
-router.get('/github/callback',
-    passport.authenticate('github', { failureRedirect: '/login' }),
+
+// Handle GitHub OAuth callback
+router.get("/github/callback",
+    passport.authenticate("github", { failureRedirect: "/login" }),
     (req, res) => {
-        res.redirect('/');
+        console.log("✅ GitHub Login Successful:", req.user);
+        res.redirect("https://a4-zirins.vercel.app/"); // Redirect back to frontend
     }
 );
 
