@@ -12,21 +12,23 @@ const User = require('./models/User');
 const Task = require('./models/Task');
 const cors = require('cors');
 
-
 const app = express();
 
-app.set('trust proxy', 1);  // For secure cookies behind a proxy
+app.set('trust proxy', 1); // For secure cookies behind a proxy
 
+// ✅ CORS Middleware (Fix CORS Issues)
 app.use(cors({
     origin: [
-        "https://a4-zirins.vercel.app", // Allow requests from frontend
+        "https://a4-zirins.vercel.app", // Allow frontend requests
         "http://localhost:5173" // Allow local frontend testing (Vite)
     ],
     credentials: true, // Allow cookies/session data
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ✅ Ensure OPTIONS is allowed
     allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
+// ✅ Handle Preflight OPTIONS requests (Fixes CORS)
+app.options("*", cors()); // This ensures the server responds properly to preflight requests
 
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
