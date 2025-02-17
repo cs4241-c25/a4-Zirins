@@ -17,3 +17,5 @@ Passport.js for GitHub authentication.
 5. Beautified the login page
 6. Used Vercel for client deployment and Render for server deployment
 7. Used state management to ensure real-time updates
+
+NOTE: It may take a few seconds for the backend to start up initially
