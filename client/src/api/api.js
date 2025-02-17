@@ -18,3 +18,5 @@ export async function login(username, password) {
     });
     return response.json();
 }
+
+export default api;
