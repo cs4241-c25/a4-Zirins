@@ -23,7 +23,9 @@ app.use(cors({
         "https://a4-zirins.vercel.app", // Allow requests from frontend
         "http://localhost:5173" // Allow local frontend testing (Vite)
     ],
-    credentials: true // Allow session cookies
+    credentials: true, // Allow session cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 

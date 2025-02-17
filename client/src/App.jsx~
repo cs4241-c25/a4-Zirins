@@ -1,13 +1,15 @@
 import Login from "./components/Login"; // Make sure path is
+import Header from "./components/Header";
 import TaskList from "./components/TaskList";
 import TaskForm from "./components/TaskForm";
+import Auth from "./components/Auth";
 
 function App() {
     return (
         <div>
+            <Auth />
             <Login />
-            <TaskList />
-            <TaskForm />
+
         </div>
     );
 }

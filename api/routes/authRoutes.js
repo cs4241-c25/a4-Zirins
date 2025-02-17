@@ -20,9 +20,20 @@ router.post('/login', passport.authenticate('local'), (req, res) => {
 });
 
 // Logout Route
-router.get('/logout', (req, res) => {
-    req.logout(() => {
-        res.redirect('https://a4-zirins.vercel.app/');
+router.get("/logout", (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            return res.status(500).json({ error: "Logout failed" });
+        }
+
+        // 🔹 Explicitly clear session cookie
+        res.clearCookie("connect.sid", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // ✅ Secure in production
+            sameSite: "None", // ✅ Allows cross-site authentication
+        });
+
+        res.status(200).json({ message: "Logged out successfully" });
     });
 });
 
