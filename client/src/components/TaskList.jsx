@@ -10,8 +10,13 @@ export default function TaskList() {
             .catch(() => setTasks([]));
     }, []);
 
+    if (!tasks) {
+        return <div>loading</div>
+    }
+
     return (
         <div className="mt-4 p-4 bg-white shadow-lg rounded-lg w-80">
+            <p>HELLO</p>
             <h2 className="text-lg font-bold mb-2">Your Tasks</h2>
             {tasks.length === 0 ? (
                 <p>No tasks found.</p>
