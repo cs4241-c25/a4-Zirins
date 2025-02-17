@@ -15,7 +15,6 @@ export default function App() {
                 const response = await api.checkAuth();
                 if (response.user) {
                     setUser(response.user);
-                    fetchTasks(); // ✅ Fetch tasks immediately after login
                 }
             } catch (error) {
                 console.error("❌ Auth status check failed:", error);
@@ -24,28 +23,34 @@ export default function App() {
         checkAuth();
     }, []);
 
+    // ✅ Fetch tasks when user state updates
+    useEffect(() => {
+        if (user) {
+            fetchTasks();
+        }
+    }, [user]); // ✅ Runs whenever `user` is updated
+
     // ✅ Fetch tasks from backend
     const fetchTasks = async () => {
-        if (!user) return;
         try {
             const fetchedTasks = await api.getTasks();
-            setTasks(fetchedTasks); // ✅ Store tasks in state
+            setTasks(fetchedTasks);
         } catch (error) {
             console.error("❌ Failed to fetch tasks:", error);
-            setTasks([]); // Prevent broken UI if fetch fails
+            setTasks([]);
         }
     };
 
-    // ✅ Immediately update state after adding a task
+    // ✅ Refresh tasks after adding
     const handleTaskAdded = async () => {
-        await fetchTasks(); // ✅ Refresh tasks after adding
+        await fetchTasks();
     };
 
     // ✅ Logout logic
     const handleLogout = async () => {
         await api.logout();
         setUser(null);
-        setTasks([]); // ✅ Clear tasks after logout
+        setTasks([]);
     };
 
     return (
