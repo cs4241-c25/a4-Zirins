@@ -22,7 +22,8 @@ app.use(cors({
     origin: [
         "https://a4-zirins.vercel.app", // Allow requests from frontend
         "http://localhost:5173" // Allow local frontend testing (Vite)
-    ],credentials: true // Allow session cookies
+    ],
+    credentials: true // Allow session cookies
 }));
 
 
@@ -62,10 +63,6 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-
-// Configure GitHub OAuth
-const passport = require('passport');
-const GitHubStrategy = require('passport-github').Strategy;
 
 // GitHub Authentication Setup
 passport.use(
