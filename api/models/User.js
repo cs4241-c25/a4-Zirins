@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
-const UserSchemaz = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     username: { type: String, unique: true, sparse: true }, // Unique username (for local auth)
     githubId: { type: String, unique: true, sparse: true }, // GitHub ID for OAuth
     displayName: String, // GitHub Display Name

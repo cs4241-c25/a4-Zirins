@@ -21,7 +21,7 @@ export default function TaskList({ tasks, refreshTasks }) {
                                     Priority: {task.priority} | Due: {new Date(task.dueDate).toLocaleDateString()}
                                 </p>
                                 <p className="text-sm font-bold">
-                                    Urgency: {task.urgencyLevel}
+                                    Urgency: {task.urgencyLevel} ({task.urgencyScore})
                                 </p>
                             </div>
                             <button

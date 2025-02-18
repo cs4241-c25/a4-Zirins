@@ -2,6 +2,7 @@
 
 function calculateUrgencyScore(priority, dueDate) {
     const priorityWeights = { Low: 1, Medium: 5, High: 10 };
+    const 
 
     if (!priorityWeights[priority]) throw new Error("Invalid priority value");
 
@@ -19,23 +20,8 @@ function calculateUrgencyScore(priority, dueDate) {
 
     // Calculate urgency score
     const urgencyScore = priorityWeights[priority] + (maxDays - daysUntilDue);
-    const finalScore = Math.max(urgencyScore, 0); // Ensure score is non-negative
 
-    // Categorize urgency level
-    let urgencyLevel;
-    if (finalScore >= 20) {
-        urgencyLevel = "Very Urgent 🚨";
-    } else if (finalScore >= 15) {
-        urgencyLevel = "Urgent ⚠️";
-    } else if (finalScore >= 10) {
-        urgencyLevel = "Moderate 🟡";
-    } else if (finalScore >= 5) {
-        urgencyLevel = "Low 🟢";
-    } else {
-        urgencyLevel = "Minimal ⚪";
-    }
-
-    return { urgencyScore: finalScore, urgencyLevel };
+    return Math.max(urgencyScore, 0); // Ensure score is non-negative
 }
 
 module.exports = calculateUrgencyScore;

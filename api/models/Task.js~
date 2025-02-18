@@ -12,9 +12,6 @@ const taskSchema = new mongoose.Schema({
     urgencyScore: {
         type: Number
     },
-    urgencyLevel: {
-        type: String
-    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
