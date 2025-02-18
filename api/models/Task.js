@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-calculateUrgencyScore = require('../utils/UrgencyScore');
+calculateUrgencyScore = require('../utils/urgencyScore');
 
 const taskSchema = new mongoose.Schema({
     content: { type: String, required: true },
