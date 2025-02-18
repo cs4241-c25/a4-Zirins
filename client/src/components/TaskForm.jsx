@@ -14,7 +14,7 @@ export default function TaskForm({ onTaskAdded }) {
         setLoading(true);
         try {
             await api.addTask({ content: taskContent, priority, dueDate });
-            onTaskAdded(); // ✅ Refresh parent state instead of updating local state
+            onTaskAdded(); // ✅ Refresh parent state instead of updating local state!!
             setTaskContent("");
             setPriority("Medium");
             setDueDate("");
