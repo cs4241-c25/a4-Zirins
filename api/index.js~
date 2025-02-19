@@ -21,7 +21,7 @@ app.set('trust proxy', 1);  // For secure cookies behind a proxy
 app.use(cors({
     origin: [
         "https://a4-zirins.vercel.app", // Allow requests from frontend
-        "http://localhost:5173" // Allow local frontend testing (Vite)
+        "http://localhost:5000" // Allow local frontend testing (Vite)
     ],
     credentials: true, // Allow session cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -54,10 +54,7 @@ app.use(session({
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        sameSite: 'none',
-        domain: process.env.NODE_ENV === 'production'
-            ? '.vercel.app' // Allow all subdomains
-            : 'localhost'
+        sameSite: 'none'
     }
 }));
 
