@@ -55,7 +55,7 @@ router.get('/github/callback',
     passport.authenticate('github', { failureRedirect: '/' }),
     (req, res) => {
         console.log("✅ GitHub Login Successful:", req.user);
-        res.redirect('https://a4-zirins.vercel.app/'); // Change to your frontend URL
+        res.redirect('https://a4-zirins.vercel.app/');
     }
 );
 

@@ -48,11 +48,11 @@ router.put('/update/:id', isAuthenticated, async (req, res) => {
     try {
         const { content, priority, dueDate } = req.body;
 
-        const { urgencyScore, urgencyLevel } = calculateUrgencyScore(priority, dueDate); // ✅ Get both values
+        const urgencyScore = calculateUrgencyScore(priority, dueDate); // ✅ Recalculate urgency
 
         const task = await Task.findOneAndUpdate(
             { _id: req.params.id, userId: req.user._id },
-            { content, priority, dueDate, urgencyScore, urgencyLevel },
+            { content, priority, dueDate, urgencyScore }, // ✅ Update urgency too
             { new: true }
         );
 
@@ -60,11 +60,9 @@ router.put('/update/:id', isAuthenticated, async (req, res) => {
 
         res.json({ message: "Task updated", task });
     } catch (error) {
-        console.error("Error updating task:", error);
         res.status(500).json({ error: "Server error" });
     }
 });
-
 
 // ✅ Delete task
 router.delete('/delete/:id', isAuthenticated, async (req, res) => {
